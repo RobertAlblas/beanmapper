@@ -141,6 +141,8 @@ import io.beanmapper.testmodel.strictconvention.SCSourceCForm;
 import io.beanmapper.testmodel.strictconvention.SCTargetA;
 import io.beanmapper.testmodel.strictconvention.SCTargetBResult;
 import io.beanmapper.testmodel.strictconvention.SCTargetC;
+import io.beanmapper.testmodel.superclass.SubClass;
+import io.beanmapper.testmodel.superclass.SubClassResult;
 import io.beanmapper.testmodel.tostring.SourceWithNonString;
 import io.beanmapper.testmodel.tostring.TargetWithString;
 import mockit.Expectations;
@@ -1202,12 +1204,22 @@ public class BeanMapperTest {
     }
 
     @Test
-    public void beanMapper_shouldMapFieldsFromSuperclass() {
+    public void beanMapper_shouldMapFieldsEnumFieldName() {
         BeanMapper beanMapper = new BeanMapperBuilder()
                 .setApplyStrictMappingConvention(false)
                 .build();
         UserRoleResult result = beanMapper.map(UserRole.ADMIN, UserRoleResult.class);
         assertEquals(UserRole.ADMIN.name(), result.name);
+    }
+
+    @Test
+    public void beanMapper_shouldMapFieldsFromSuperclass() {
+        SubClass source = new SubClass();
+        source.publicName = "Henk";
+        source.setPrivateName("Marie");
+        SubClassResult target = beanMapper.map(source, SubClassResult.class);
+        assertEquals(source.publicName, target.publicName);
+        assertEquals(source.getPrivateName(), target.privateName);
     }
 
     public Person createPerson(String name) {
