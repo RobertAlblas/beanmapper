@@ -91,6 +91,9 @@ import io.beanmapper.testmodel.initiallyunmatchedsource.SourceWithUnmatchedField
 import io.beanmapper.testmodel.initiallyunmatchedsource.TargetWithoutUnmatchedField;
 import io.beanmapper.testmodel.innerclass.SourceWithInnerClass;
 import io.beanmapper.testmodel.innerclass.TargetWithInnerClass;
+import io.beanmapper.testmodel.isx.SourceWithBoolean;
+import io.beanmapper.testmodel.isx.SubClassWithoutBoolean;
+import io.beanmapper.testmodel.isx.TargetWithBoolean;
 import io.beanmapper.testmodel.multipleunwrap.AllTogether;
 import io.beanmapper.testmodel.multipleunwrap.LayerA;
 import io.beanmapper.testmodel.nestedclasses.Layer1;
@@ -1259,6 +1262,24 @@ public class BeanMapperTest {
                 .build();
         UserRoleResult result = beanMapper.map(UserRole.ADMIN, UserRoleResult.class);
         assertEquals(UserRole.ADMIN.name(), result.name);
+    }
+
+    @Test
+    public void sourceWithIsBooleanMustBeRead() {
+        SourceWithBoolean source = new SourceWithBoolean() {{
+            setWaar(true);
+        }};
+        TargetWithBoolean target = beanMapper.map(source, TargetWithBoolean.class);
+        assertEquals(source.isWaar(), target.waar);
+    }
+
+    @Test
+    public void sourceParentWithIsBooleanMustBeRead() {
+        SubClassWithoutBoolean source = new SubClassWithoutBoolean() {{
+            setWaar(true);
+        }};
+        TargetWithBoolean target = beanMapper.map(source, TargetWithBoolean.class);
+        assertEquals(source.isWaar(), target.waar);
     }
 
     public Person createPerson(String name) {
